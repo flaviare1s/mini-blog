@@ -1,4 +1,9 @@
 package com.blog.MiniBlog.repositories;
 
-public class TagRepository {
+import com.blog.MiniBlog.models.Tag;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface TagRepository extends JpaRepository<Tag, Long> {
 }
