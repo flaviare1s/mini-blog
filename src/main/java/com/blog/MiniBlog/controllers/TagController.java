@@ -22,7 +22,7 @@ public class TagController {
 
     @PostMapping(path = "/save")
     private @ResponseBody Tag save(@RequestBody Tag tag) {
-        return TagService.save(tag);
+        return tagService.save(tag);
     }
 
     @GetMapping(path = "/getAll")
