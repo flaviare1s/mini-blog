@@ -5,9 +5,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "Post")
@@ -20,16 +23,19 @@ public class Post {
     private Date date;
     @ManyToOne
     private User userId;
+    @OneToMany
+    private List<Tag> tagId;
 
     public Post() {
     }
 
-    public Post(final Long postId, final String title, final String content, final Date date, final User userId) {
+    public Post(final Long postId, final String title, final String content, final Date date, final User userId, final List<Tag> tagId) {
         this.postId = postId;
         this.title = title;
         this.content = content;
         this.date = date;
         this.userId = userId;
+        this.tagId = tagId;
     }
 
     public Long getPostId() {
@@ -70,5 +76,13 @@ public class Post {
 
     public void setUserId(User userId) {
         this.userId = userId;
+    }
+
+    public List<Tag> getTagId() {
+        return tagId;
+    }
+
+    public void setTagId(List<Tag> tagId) {
+        this.tagId = tagId;
     }
 }
