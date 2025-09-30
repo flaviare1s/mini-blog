@@ -18,11 +18,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(final User user) {
-        User existingUser = userRepository.findByName(user.getName());
+        User existingUser = userRepository.findByName(user.getUsername());
         if (Objects.nonNull(existingUser)) {
             throw new RuntimeException(("Existing User"));
         }
-        User entity = new User(user.getName(), user.getEmail(), user.getUserId(), user.getPassword(), user.getRole());
+        User entity = new User(user.getUserId(), user.getName(), user.getEmail(), user.getUsername(), user.getPassword(), user.getRole());
         return userRepository.save(entity);
     }
 
