@@ -25,7 +25,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public UserDetails loadUserByUserName(String login) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(login);
+        User user = userRepository.findByUsername(login);
 
         if (user == null) {
             throw new UsernameNotFoundException("User not found: " + login);
@@ -40,7 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public String getToken(AuthRequest auth) {
-        User user = userRepository.findByUserName(auth.getUsername());
+        User user = userRepository.findByUsername(auth.getUsername());
         if (user == null) {
             throw new UsernameNotFoundException("User not found: " + auth.getUsername());
         }
@@ -52,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             Algorithm algorithm = Algorithm.HMAC256("my-secret");
 
             return JWT.create()
-                    .withIssuer("FrameBlog")
+                    .withIssuer("MiniBlog")
                     .withSubject(user.getUsername())
                     .withExpiresAt(getExpirationDate())
                     .sign(algorithm);

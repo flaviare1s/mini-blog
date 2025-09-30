@@ -16,10 +16,10 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private UserService userService;
 
-    @Value("${FrameBlog.rabbitmq.exchange}")
+    @Value("${MiniBlog.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${FrameBlog.rabbitmq.routingkey}")
+    @Value("${MiniBlog.rabbitmq.routingkey}")
     private String routingkey;
 
     @Override

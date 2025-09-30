@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @CircuitBreaker(name = "circuitBreaker")
     public User save(final User user) {
-        User existingUser = userRepository.findByUserName(user.getUsername());
+        User existingUser = userRepository.findByUsername(user.getUsername());
 
         if(Objects.nonNull(existingUser)){
             throw new RuntimeException("Existing User");
