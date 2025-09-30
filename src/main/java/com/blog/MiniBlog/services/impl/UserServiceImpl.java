@@ -1,11 +1,11 @@
 package com.blog.MiniBlog.services.impl;
-
-import com.blog.MiniBlog.enums.RoleEnum;
 import com.blog.MiniBlog.models.User;
 import com.blog.MiniBlog.repositories.UserRepository;
 import com.blog.MiniBlog.services.UserService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,14 +16,24 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
+    @CircuitBreaker(name = "circuitBreaker")
     public User save(final User user) {
-        User existingUser = userRepository.findByName(user.getUsername());
-        if (Objects.nonNull(existingUser)) {
-            throw new RuntimeException(("Existing User"));
+        User existingUser = userRepository.findByUserName(user.getUsername());
+
+        if(Objects.nonNull(existingUser)){
+            throw new RuntimeException("Existing User");
         }
-        User entity = new User(user.getUserId(), user.getName(), user.getEmail(), user.getUsername(), user.getPassword(), user.getRole());
-        return userRepository.save(entity);
+        String passwordHash = passwordEncoder.encode(user.getPassword());
+
+        User entity = new User(user.getUserId(), user.getName(), user.getEmail(), passwordHash, user.getUsername(), user.getRole());
+
+        User newUser = userRepository.save(entity);
+
+        return new User(newUser.getUserId(), newUser.getName(), newUser.getEmail(), newUser.getPassword(), newUser.getUsername(), newUser.getRole());
     }
 
     @Override
@@ -40,6 +50,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(Long id, User user) {
+        User userUpdate = userRepository.findById(id).orElse(null);
+        if(Objects.nonNull(userUpdate)){
+            String passwordHash = passwordEncoder.encode(user.getPassword());
+            userUpdate.setName(user.getName());
+            userUpdate.setUsername(user.getUsername());
+            userUpdate.setEmail(user.getEmail());
+            userUpdate.setRole(user.getRole());
+            userUpdate.setPassword(passwordHash);
+            return userRepository.save(userUpdate);
+        }
         return null;
     }
 
